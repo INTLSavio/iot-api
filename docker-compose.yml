@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+ postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: think
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+ nestjs-api:
+    build: .
+    container_name: my-nestjs-api
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    command: ["npm", "run", "start:dev"]
+
+networks:
+ app-network:
+    driver: bridge
+
+volumes:
+ postgres_data:
